@@ -85,6 +85,8 @@ try:
         query_terms = conf['terms']
         query_courses = conf['courses']
         show_score = conf['show_score']
+        if not show_score:
+            show_score = True
 except:
     print("Plese fill the parameters in config.yaml or use command line arguments.")
     exit(1)
