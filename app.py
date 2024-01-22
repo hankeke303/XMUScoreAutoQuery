@@ -112,7 +112,15 @@ except:
 session = requests.Session()
 session.headers = http_header
 
+loginCount = 0
+
 def loginAndGetToken():
+    global loginCount
+    loginCount += 1
+    if loginCount > 10:
+        print("连续登录失败次数过多，程序退出。")
+        notify('登录异常提醒', '不是你的成绩，是你的登录出了问题……一直都登录不了呢~')
+        exit(1)
     login(session, username, password)
     print("login")
     res = session.get("https://jw.xmu.edu.cn/appShow?appId=4768574631264620", allow_redirects=True)
@@ -137,12 +145,14 @@ while True:
                             data={"XH": username})
         # print(res.status_code) # 401 代表未登录
         # print(res.text)
-        if res.status_code == 401:
+        # print(res.url)
+        if res.status_code == 401 or (res.status_code == 200 and res.url[:22] == 'https://ids.xmu.edu.cn'):
             loginAndGetToken()
             continue
         elif res.status_code != 200:
             raise Exception("Failed to get scores.")
         terms = json.loads(res.text)['datas']['cxycjdxnxq']['rows']
+        loginCount = 0
         for term in terms:
             if not query_terms or term['XNXQDM_DISPLAY'] in query_terms or term['XNXQDM'] in query_terms:
                 query_template['querySetting'][2]['value'] = term['XNXQDM']
@@ -150,7 +160,7 @@ while True:
                 res = session.post("https://jw.xmu.edu.cn/jwapp/sys/cjcx/modules/cjcx/xscjcx.do",
                                     headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
                                     data=parse.urlencode(query_template))
-                if res.status_code == 401:
+                if res.status_code == 401 or (res.status_code == 200 and res.url[:22] == 'https://ids.xmu.edu.cn'):
                     loginAndGetToken()
                     continue
                 # print(res.status_code)
@@ -159,6 +169,7 @@ while True:
                 if res.status_code != 200:
                     raise Exception("Failed to get scores.")
                 scores = json.loads(res.text)['datas']['xscjcx']['rows']
+                loginCount = 0
                 for score in scores:
                     if score['DJCJLXDM_DISPLAY'] == '百分制' and (not query_courses or score['KCM'] in query_courses \
                         or score['XSKCM'] in query_courses or score['KCH'] in query_courses):
