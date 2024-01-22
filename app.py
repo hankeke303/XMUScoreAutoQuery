@@ -84,6 +84,7 @@ try:
         interval = int(args.interval) if args.interval else conf['interval']
         query_terms = conf['terms']
         query_courses = conf['courses']
+        show_score = conf['show_score']
 except:
     print("Plese fill the parameters in config.yaml or use command line arguments.")
     exit(1)
@@ -126,7 +127,6 @@ def loginAndGetToken():
     res = session.get("https://jw.xmu.edu.cn/appShow?appId=4768574631264620", allow_redirects=True)
     with open('Cookie.txt', 'w') as f:
         f.write(str(session.cookies.get_dict()))
-
 try:
     with open('Cookie.txt', 'r') as f:
         cookie = eval(f.read())
@@ -134,7 +134,6 @@ try:
 except:
     loginAndGetToken()
 
-res = session.get("https://jw.xmu.edu.cn/appShow?appId=4768574631264620", allow_redirects=True)
 # print(res.status_code, res.url, res.headers)
 # print(session.cookies.get_dict())
 
@@ -175,7 +174,10 @@ while True:
                         or score['XSKCM'] in query_courses or score['KCH'] in query_courses):
                             if score['KCH'] not in save_scores or save_scores[score['KCH']]['score'] != score['ZCJ']:
                                 save_scores[score['KCH']] = {"xf": score['XF'], "score": score['ZCJ'], "grade": score['XFJD'], "name": score['KCM'], "term": term['XNXQDM_DISPLAY'], "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}
-                                noti += f"{score['KCM']}：{score['ZCJ']} 分，绩点 {score['XFJD']}（学分 {int(score['XF'])} 分）。\n"
+                                if show_score:
+                                    noti += f"{score['KCM']}：{score['ZCJ']} 分，绩点 {score['XFJD']}（学分 {int(score['XF'])} 分）。\n"
+                                else:
+                                    noti += f"{score['KCM']}\n"
                 # print(noti)
                 # print(save_scores)
                 # time.sleep(600)
@@ -184,8 +186,9 @@ while True:
             with open("scores.yaml", "w", encoding='utf-8') as f:
                 yaml.dump(save_scores, f, encoding='utf-8', allow_unicode=True)
             noti = "以下课程有新成绩：\n" + noti
-            gpa = sum([score['xf'] * score['grade'] for _, score in save_scores.items()]) / sum([score['xf'] for _, score in save_scores.items()])
-            noti += "\n目前已存储的课程 GPA: %.5f\n" % gpa
+            if show_score:
+                gpa = sum([score['xf'] * score['grade'] for _, score in save_scores.items()]) / sum([score['xf'] for _, score in save_scores.items()])
+                noti += "\n目前已存储的课程 GPA: %.5f\n" % gpa
             print(noti)
             notify('新成绩', noti)
         else:

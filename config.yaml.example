@@ -14,3 +14,4 @@ email:            # 邮件通知配置
   password:       # SMTP 密码
   use_ssl: false  # 是否使用 SSL
   receiver:       # 收件人（留空则默认与 username 相同）
+show_score: true # 是否在推送中显示成绩
