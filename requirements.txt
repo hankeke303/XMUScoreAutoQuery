@@ -1,0 +1,6 @@
+beautifulsoup4==4.12.3
+plyer==2.1.0
+pycryptodomex==3.20.0
+PyYAML==6.0.1
+PyYAML==6.0.1
+Requests==2.31.0

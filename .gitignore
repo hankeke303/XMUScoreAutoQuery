@@ -1,0 +1,6 @@
+.DS_Store
+__pycache__
+.vscode
+Cookie.txt
+config.yaml
+scores.yaml
