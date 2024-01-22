@@ -1,0 +1,16 @@
+info:
+  username:       # 用户名（你的学号）
+  password:       # 密码
+interval: 10      # 检查间隔（分钟）
+terms:            # 学期（格式：2022-2023学年 第一学期），留空则为查询所有
+  # - 2023-2024学年 第一学期
+courses:          # 课程（可以为课程号也可以是课程名），留空则为查询所有
+  # 
+notify: system    # 通知方式（system: 系统通知，email: 邮件通知，both: 全部使用，留空则不通知）
+email:            # 邮件通知配置
+  host:           # SMTP 服务器地址
+  port:           # SMTP 服务器端口
+  username:       # SMTP 用户名
+  password:       # SMTP 密码
+  use_ssl: false  # 是否使用 SSL
+  receiver:       # 收件人（留空则默认与 username 相同）

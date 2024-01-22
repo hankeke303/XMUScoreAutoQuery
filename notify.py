@@ -4,7 +4,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
 
-with open('config.yaml', 'r') as f:
+with open('config.yaml', 'r', encoding='utf-8') as f:
     conf = yaml.load(f, Loader=yaml.FullLoader)
     smtp_conf = conf['email']
     notify_type = conf['notify']

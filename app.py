@@ -76,7 +76,7 @@ parser.add_argument('--interval',
 args = parser.parse_args()
 
 try:
-    with open("config.yaml", "r") as f:
+    with open("config.yaml", "r", encoding='utf-8') as f:
         conf: dict = yaml.load(f, Loader=yaml.FullLoader)
         username = args.username if args.username else str(conf['info']['username'])
         password = args.password if args.password else str(conf['info']['password'])
@@ -160,18 +160,20 @@ while True:
                     if score['DJCJLXDM_DISPLAY'] == '百分制' and (not query_courses or score['KCM'] in query_courses \
                         or score['XSKCM'] in query_courses or score['KCH'] in query_courses):
                             if score['KCH'] not in save_scores or save_scores[score['KCH']]['score'] != score['ZCJ']:
-                                save_scores[score['KCH']] = {"score": score['ZCJ'], "name": score['KCM'], "term": term['XNXQDM_DISPLAY'], "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}
-                                noti += f"{score['KCM']}：{score['ZCJ']} 分，绩点 {score['XFJD']}。\n"
+                                save_scores[score['KCH']] = {"xf": score['XF'], "score": score['ZCJ'], "grade": score['XFJD'], "name": score['KCM'], "term": term['XNXQDM_DISPLAY'], "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}
+                                noti += f"{score['KCM']}：{score['ZCJ']} 分，绩点 {score['XFJD']}（学分 {int(score['XF'])} 分）。\n"
                 # print(noti)
                 # print(save_scores)
                 # time.sleep(600)
         print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
         if noti:
-            noti = "以下课程有新成绩：\n" + noti
-            print(noti)
-            notify('新成绩', noti)
             with open("scores.yaml", "w", encoding='utf-8') as f:
                 yaml.dump(save_scores, f, encoding='utf-8', allow_unicode=True)
+            noti = "以下课程有新成绩：\n" + noti
+            gpa = sum([score['xf'] * score['grade'] for _, score in save_scores.items()]) / sum([score['xf'] for _, score in save_scores.items()])
+            noti += "\n目前已存储的课程 GPA: %.5f\n" % gpa
+            print(noti)
+            notify('新成绩', noti)
         else:
             print("没有新成绩")
     except Exception as e:
