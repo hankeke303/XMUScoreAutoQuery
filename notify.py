@@ -47,7 +47,7 @@ def notify(title, message):
     if notify_type == 'both' or notify_type == 'system':
         notification.notify(
             title = title,
-            message = message,
+            message = message[:256],
             app_icon = None,
             timeout = 10
         )

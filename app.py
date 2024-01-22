@@ -105,6 +105,8 @@ except:
 # print("webvpn_username: " + webvpn_username)
 # print("webvpn_password: " + webvpn_password)
 # print("interval: " + str(interval))
+# print("query_terms: " + str(query_terms))
+# print("query_courses: " + str(query_courses))
 # exit()
 
 session = requests.Session()
@@ -146,13 +148,14 @@ while True:
                 query_template['querySetting'][2]['value'] = term['XNXQDM']
                 # print(query_template)
                 res = session.post("https://jw.xmu.edu.cn/jwapp/sys/cjcx/modules/cjcx/xscjcx.do",
+                                    headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
                                     data=parse.urlencode(query_template))
                 if res.status_code == 401:
                     loginAndGetToken()
                     continue
                 # print(res.status_code)
-                # print(res.text)
-                # exit()
+                print(res.text)
+                exit()
                 if res.status_code != 200:
                     raise Exception("Failed to get scores.")
                 scores = json.loads(res.text)['datas']['xscjcx']['rows']
