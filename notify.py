@@ -26,7 +26,7 @@ def report_with_smtp(title, message):
         msg['From'] = '%s <%s>' % (Header("成绩提醒", 'utf-8').encode(), username)
         msg['To'] = Header(receiver if isinstance(receiver, str) else ",".join(receiver), 'utf-8')
 
-        print(msg)
+        # print(msg)
 
         try:
             smtp = smtplib.SMTP_SSL(host, port) if use_ssl else smtplib.SMTP(host, port)
