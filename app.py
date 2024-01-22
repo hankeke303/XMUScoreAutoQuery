@@ -154,8 +154,8 @@ while True:
                     loginAndGetToken()
                     continue
                 # print(res.status_code)
-                print(res.text)
-                exit()
+                # print(res.text)
+                # exit()
                 if res.status_code != 200:
                     raise Exception("Failed to get scores.")
                 scores = json.loads(res.text)['datas']['xscjcx']['rows']
