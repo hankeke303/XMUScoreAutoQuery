@@ -136,12 +136,12 @@ while True:
         # print(res.status_code) # 401 代表未登录
         # print(res.text)
         # print(res.url)
-        if res.status_code == 401 or (res.status_code == 200 and res.url[:22] == 'https://ids.xmu.edu.cn'):
+        try:
+            assert (res.status_code == 200 and 'ids.xmu.edu.cn' not in res.url)
+            terms = json.loads(res.text)['datas']['cxycjdxnxq']['rows']
+        except:
             loginAndGetToken()
             continue
-        elif res.status_code != 200:
-            raise Exception("Failed to get scores.")
-        terms = json.loads(res.text)['datas']['cxycjdxnxq']['rows']
         loginCount = 0
         for term in terms:
             if not query_terms or term['XNXQDM_DISPLAY'] in query_terms or term['XNXQDM'] in query_terms:
@@ -150,15 +150,15 @@ while True:
                 res = session.post("https://jw.xmu.edu.cn/jwapp/sys/cjcx/modules/cjcx/xscjcx.do",
                                     headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
                                     data=parse.urlencode(query_template))
-                if res.status_code == 401 or (res.status_code == 200 and res.url[:22] == 'https://ids.xmu.edu.cn'):
-                    loginAndGetToken()
-                    continue
                 # print(res.status_code)
                 # print(res.text)
                 # exit()
-                if res.status_code != 200:
-                    raise Exception("Failed to get scores.")
-                scores = json.loads(res.text)['datas']['xscjcx']['rows']
+                try:
+                    assert (res.status_code == 200 and 'ids.xmu.edu.cn' not in res.url)
+                    scores = json.loads(res.text)['datas']['xscjcx']['rows']
+                except:
+                    loginAndGetToken()
+                    continue
                 loginCount = 0
                 for score in scores:
                     if score['DJCJLXDM_DISPLAY'] == '百分制' and (not query_courses or score['KCM'] in query_courses \
