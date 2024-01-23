@@ -124,6 +124,7 @@ def loginAndGetToken():
         print("连续登录失败次数过多，程序退出。")
         notify('登录异常提醒', '不是你的成绩，是你的登录出了问题……一直都登录不了呢~')
         exit(1)
+    session.cookies.clear()
     login(session, username, password)
     print("login")
     res = session.get("https://jw.xmu.edu.cn/appShow?appId=4768574631264620", allow_redirects=True)
