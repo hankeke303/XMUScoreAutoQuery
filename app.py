@@ -60,15 +60,6 @@ parser.add_argument('--username',
 parser.add_argument('--password',
                     metavar='password',
                     help="统一身份认证密码")
-parser.add_argument('--webvpn',
-                    choices=["true", "false"],
-                    help="是否通过 WebVPN 发送请求")
-parser.add_argument('--vpn-username',
-                    metavar='vpn_username',
-                    help="WebVPN 用户名")
-parser.add_argument('--vpn-password',
-                    metavar='vpn_password',
-                    help="WebVPN 密码")
 parser.add_argument('--interval',
                     metavar='interval',
                     help="查询间隔，单位为分钟")
@@ -104,9 +95,6 @@ except:
 
 # print("username: " + username)
 # print("password: " + password)
-# print("use_webvpn: " + str(use_webvpn))
-# print("webvpn_username: " + webvpn_username)
-# print("webvpn_password: " + webvpn_password)
 # print("interval: " + str(interval))
 # print("query_terms: " + str(query_terms))
 # print("query_courses: " + str(query_courses))
